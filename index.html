@@ -16,9 +16,14 @@
       overflow: hidden;
     }
 
+    #canvas-container {
+      position: relative;
+      width: 320px; /* キャンバスの幅 */
+      height: 240px; /* キャンバスの高さ */
+    }
+
     canvas {
-      display: block;
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
@@ -42,15 +47,13 @@
       font-size: 16px;
       cursor: pointer;
     }
-
-    @media (max-width: 599px) {
-      .button-container {
-        display: none;
-      }
-    }
   </style>
 </head>
 <body>
+  <div id="canvas-container">
+    <canvas></canvas>
+  </div>
+
   <div class="button-container">
     <button class="button" id="circleButton">円</button>
     <button class="button" id="squareButton">四角</button>
@@ -64,14 +67,16 @@
     let currentCamera = 'environment'; // デフォルトは外部カメラ
 
     function setup() {
-      createCanvas(displayWidth, displayHeight);
+      let canvasContainer = document.getElementById('canvas-container');
+      let canvas = createCanvas(320, 240);
+      canvas.parent('canvas-container'); // キャンバスを親要素に配置
       capture = createCapture({
         audio: false,
         video: {
           facingMode: currentCamera
         }
       }, () => {
-        capture.size(displayWidth, displayHeight);
+        capture.size(320, 240);
         capture.hide();
       });
 
@@ -115,15 +120,15 @@
     }
 
     function switchCamera() {
-      currentCamera = currentCamera === 'environment' ? 'user' : 'environment'; // カメラを切り替える
-      capture.remove(); // 既存のキャプチャを削除
+      currentCamera = currentCamera === 'environment' ? 'user' : 'environment';
+      capture.remove();
       capture = createCapture({
         audio: false,
         video: {
           facingMode: currentCamera
         }
       }, () => {
-        capture.size(displayWidth, displayHeight);
+        capture.size(320, 240);
         capture.hide();
       });
     }
